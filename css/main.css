@@ -72,3 +72,8 @@ body {
 	padding: 4px;
 	border-radius: 5px;
 }
+.particle {
+	position: absolute;
+	font-size: 24pt;
+	z-index: 9998;
+}

@@ -6,18 +6,22 @@
 
 		count: 0,
 
-		init: function (x, y, dir, life) {
+		init: function (x, y, angle) {
 
 			// create the el
-			this.x = x;
-			this.y = y;
-			this.msg = msg;
-			this.dir = dir || -1;
-			this.life = life || 50;
+			this.x = x + (30 + (Math.random() * 30)) * Math.sin(angle);
+			this.y = y + (30 + (Math.random() * 30)) * Math.cos(angle);
+			this.angle = angle;
+			this.life = 20 + ((Math.random() * 20) | 0);
+
+			this.speed = 3;
 
 			var el = this.el = document.createElement("div");
-			el.className = "oneup";
-			el.innerHTML = msg;
+			el.className = "particle";
+			el.innerHTML = String.fromCharCode(9731);
+			var col = 360 * Math.random() | 0;//(0.6 + (Math.random() * 0.4)) | 0;
+			//el.style.color = "rgb(" + col + "," + col + "," + col + ")";
+			el.style.color = "hsl(" + col + ", 80%, 50%)";
 			this.sync(1);
 
 			return this;
@@ -30,7 +34,6 @@
 			this.el.style.left = this.x + "px";
 			this.el.style.opacity = perc;
 
-
 		},
 
 		tick: function () {
@@ -42,7 +45,8 @@
 				return false;
 			}
 
-			this.y += this.dir;
+			this.y += Math.cos(this.angle) * this.speed;
+			this.x += Math.sin(this.angle) * this.speed;
 
 			this.sync(1 - perc);
 

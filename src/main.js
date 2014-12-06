@@ -230,6 +230,14 @@
 
 		},
 
+		addParticle: function (x, y) {
+
+			var o = Object.create(Particle).init(x, y, Math.random() * (Math.PI*2));
+			this.addFxEl(o.el);
+			this.fx.push(o);
+
+		},
+
 		add: function (charCode, x, y) {
 
 			var s = document.createElement("span");
@@ -347,6 +355,10 @@
 				this.data.count -= 0.008;
 			}
 
+			for (var i = 0; i < 20; i++) {
+				this.addParticle(x, y - 50)
+			}
+
 			this.numChars *= this.data.charGrowSpeed;
 			this.nextLevel();
 
@@ -369,7 +381,6 @@
 
 			if (now - this.last > 1000) {
 				this.last = now;
-				//this.addOneUp(this.data.scores.timeSubtract, 20, 20, 1);
 				this.updateScore(this.data.scores.timeSubtract);
 			}
 
