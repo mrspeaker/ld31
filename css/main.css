@@ -20,6 +20,9 @@ body {
 	transform: translate3d(0, 0, 0);
 	border-radius: 3px;
 }
+.special {
+	color: #c50;
+}
 
 .flipped {
 	color: #c50;

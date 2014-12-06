@@ -23,11 +23,11 @@
 		data: {
 
 			scores: {
-				start: 100,
+				start: 20,
 				removeOne: 1,
 				shuffle: -20,
-				snowman: 100,
-				timeSubtract: -2
+				snowman: 10,
+				timeSubtract: -3
 			},
 
 			bounds: {
@@ -49,6 +49,7 @@
 			bomb: [55357, 56483],
 			poo: [55357, 56489],
 			snowman: 9731,
+			arrow: 0x21E7,
 			startCodes: 9000
 
 		},
@@ -76,9 +77,9 @@
 
 			board.addEventListener("click", (function (e) {
 
-				var isChar = e.target.className !== "char";
+				var isChar = e.target.classList.contains("char");
 
-				if (isChar) {
+				if (!isChar) {
 					this.shuffle(e.pageX, e.pageY);
 				} else {
 					this.killChar(e.target);
@@ -179,8 +180,10 @@
 			}).bind(this), false);
 
 			// Add bombs
-			var bombs = (this.data.numChars / this.data.bombEvery) | 0;
+			var bombs = (this.numChars / this.data.bombEvery) | 0;
 			if (this.round > 0 && (this.bonusBomb || Math.random() < 0.2)) bombs++;
+
+			console.log(bombs, this.numChars / this.data.bombEvery);
 
 			for (var i = 0; i < bombs; i++) {
 				randPos = this.randPos();
@@ -189,6 +192,9 @@
 					randPos.x,
 					randPos.y);
 			}
+
+			//var a = this.add(0x21E7, 10, 10);
+			//a.classList.add("special");
 
 		},
 
@@ -220,7 +226,7 @@
 
 			var s = document.createElement("span");
 			s.innerHTML = String.fromCharCode(charCode);
-			s.className = "char";
+			s.classList.add("char");
 			s.style.zIndex = Math.random () * 50 | 0;
 			s.style.top = y + "px";
 			s.style.left = x + "px";
@@ -302,8 +308,10 @@
 					el.style.zIndex = Math.random () * 50 | 0;
 				});
 
-			this.updateScore(this.data.scores.shuffle);
-			this.addOneUp(this.sign(this.data.scores.shuffle), x, y - 50, 1);
+			// this.updateScore(this.data.scores.shuffle);
+			var shuffleCost = Math.max(this.data.scores.shuffle, -(this.data.scores.snowman / 5) | 0);
+			this.updateScore(shuffleCost);
+			this.addOneUp(this.sign(shuffleCost), x, y - 50, 1);
 
 		},
 
@@ -314,8 +322,13 @@
 			if (bb.w < this.maxW - 20) bb.w *= this.data.xGrowSpeed;
 			if (bb.h < this.maxH - 20) bb.h *= this.data.yGrowSpeed;
 
-			this.addOneUp(this.data.scores.snowman + "!!!", x, y - 80, -0.5, 100);
+			this.addOneUp("$" + this.data.scores.snowman + "!!!", x, y - 80, -0.5, 100);
 			this.updateScore(this.data.scores.snowman);
+
+			if (this.data.scores.snowman < 100) {
+				this.data.scores.snowman = this.data.scores.snowman * 1.1 | 0;
+			}
+
 			this.round++;
 
 			if (this.round > 30 && this.data.count > 1.05) {
@@ -408,8 +421,8 @@
 
 		updateHUD: function () {
 			var d = this.data;
-			document.querySelector("#score").innerHTML = this.score;// + " Game hi:" +this.highest + " Best:" + this.highestEver + "<br/>";
-			document.querySelector("#round").innerHTML = this.round;
+			document.querySelector("#score").innerHTML = "$" + this.score;// + " Game hi:" +this.highest + " Best:" + this.highestEver + "<br/>";
+			document.querySelector("#round").innerHTML = this.round + "☃";
 			//document.querySelector("#stats").innerHTML = d.count.toFixed(2) + "--" + (this.numChars|0) + ":" + (d.bounds.w | 0) + ":" + (d.bounds.h |0);
 		}
 
