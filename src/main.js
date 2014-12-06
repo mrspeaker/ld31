@@ -4,26 +4,21 @@
 
 	var main = {
 
+		debug: false,
+
 		maxW: 1024,
 		maxH: 576,
 
 		round: 0,
-
 		score: 0,
 		roundHighest: 0,
 
 		last: Date.now(),
 
 		bonusBomb: true,
-
-		debug: false,
-
-		ini: null,
-
 		shakeTime: 0,
 
-		state: "BORN",
-
+		ini: null,
 		data: {
 
 			scores: {
@@ -196,9 +191,18 @@
 
 			}
 
-			randPos = this.randPos();
-			var a = this.add(this.uni.arrow, randPos.x, randPos.y);
-			a.classList.add("special");
+			// Add pointing arrows
+			var arrows = (this.numChars / (this.data.bombEvery * 4)) | 0;
+			if (this.round > 4 && this.round < 25 && Math.random() < 0.1) arrows++;
+
+			for (i = 0; i < arrows; i++) {
+				randPos = this.randPos();
+				var a = this.add(
+					this.uni.arrow,
+					randPos.x,
+					randPos.y);
+				a.classList.add("special");
+			}
 
 		},
 
@@ -228,6 +232,10 @@
 		},
 
 		addOneUp: function (msg, x, y, dir, life) {
+
+			if (this.fx.length > 15) {
+				return;
+			}
 
 			var o = Object.create(OneUp).init(msg, x, y, dir, life);
 			this.addFxEl(o.el);
@@ -291,7 +299,7 @@
 		    	p;
 		    while (!p && (p = properties.shift())) {
 		        if (typeof board.style[p] != 'undefined') {
-		            //return p;
+
 		        } else {
 		        	p = null
 		        }
@@ -313,14 +321,12 @@
 
 			if (inn.charCodeAt(0) === this.uni.arrow) {
 
-				//alert(this.snowman);
 				if (this.rotateProp) {
 					var dx = el.offsetLeft - this.snowman.offsetLeft,
 					    dy = el.offsetTop - this.snowman.offsetTop,
 					    angle = Math.atan2(dy, dx) - (Math.PI / 2);
 
-					//return angle;// % Math.PI;
-					el.style[this.rotateProp] = 'rotate(' + angle + 'rad)';
+					el.style[this.rotateProp] = "rotate(" + angle + "rad)";
 				}
 
 			}
@@ -331,7 +337,9 @@
 					this.bonusBomb = false;
 					if (byChar) {
 						setTimeout((function () {
+
 							this.explode(pos);
+
 						}).bind(this), 300);
 					}
 					else {
@@ -353,9 +361,11 @@
 			this.shakeTime = 30;
 
 			this.getAllChars().forEach(function (el) {
+
 				if (el == this.snowman) {
 					return;
 				}
+
 				var pos2 = self.getElPos(el),
 					xo = pos.x - pos2.x,
 					yo = pos.y - pos2.y;
@@ -363,6 +373,7 @@
 				if (Math.sqrt(xo * xo + yo * yo) < 130) {
 					this.killChar(el, true);
 				}
+
 			}, this);
 
 		},
@@ -371,7 +382,9 @@
 
 			Array.prototype.slice.call(document.querySelectorAll(".char"))
 				.forEach(function (el) {
+
 					el.style.zIndex = Math.random () * 50 | 0;
+
 				});
 
 			// this.updateScore(this.data.scores.shuffle);
@@ -495,7 +508,6 @@
 				y = style.top,
 				x = style.left,
 				board = this.boardPos;
-
 
 			return {
 				x: parseInt(x, 10) + board.x,
