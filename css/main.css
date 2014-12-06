@@ -20,7 +20,7 @@ body {
 }
 
 #game {
-
+	position: relative;
 }
 
 #board {
@@ -30,7 +30,6 @@ body {
 	overflow: hidden;
 	border: 1px solid green;
 	margin: auto;
-	margin-top: 50px;
 }
 
 #fx {

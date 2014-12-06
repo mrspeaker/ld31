@@ -24,15 +24,22 @@
 				snowman: 3100,
 				timeSubtract: -30
 			},
+			bounds: {
+				w: 100,
+				h: 100
+			},
 			xo: 1.06,
 			yo: 1.04,
-			count: 1.15
+			count: 1.15,
+			bombEvery: 80
 		},
 
 		uni: {
 
 			bomb: [55357, 56483],
-			poo: [55357, 56489]
+			poo: [55357, 56489],
+			snowman: 9731,
+			startCodes: 9000
 
 		},
 
@@ -42,12 +49,14 @@
 
 		init: function () {
 
+			var self = this;
+
 			this.updateHUD();
 
 			this.fx = [];
 
-			var snowman = 9731,
-				start = 9000,
+			var snowman = this.uni.snowman,
+				start = this.uni.startCodes,
 				board = document.querySelector("#board");
 			var self = this;
 
@@ -58,6 +67,12 @@
 			}
 			this.fxDom = document.querySelector("#fx");
 
+			document.querySelector("#giveUp").addEventListener("click", function () {
+
+				self.reset();
+
+			}, false);
+
 			board.addEventListener("click", function (e) {
 				if (e.target.className !== "char") {
 					self.shuffle(e.pageX, e.pageY);
@@ -66,28 +81,30 @@
 				}
 			});
 
-			var w = 100,
-				h = 100,
-				round = 1,
+			var round = 1,
 				count = 2,
-				self = this;
+				bb = this.data.bounds;
 
 			(function run () {
+
+				var randPos;
 
 				board.innerHTML = "";
 				for (var i = 0; i < count; i++) {
 					if (start + i === snowman) continue;
+					var randPos = self.randPos();
 					self.add(
 						start + i,
-						(Math.random() * w | 0),
-						(Math.random() * h | 0)
+						randPos.x,
+						randPos.y
 					);
 				}
 
+				randPos = self.randPos();
 				var snowy = self.snowman = self.add(
 					snowman,
-					Math.random() * w | 0,
-					Math.random() * h | 0);
+					randPos.x,
+					randPos.y);
 
 				if (self.debug) {
 					snowy.style.backgroundColor = "red";
@@ -99,26 +116,33 @@
 					e.preventDefault();
 					snowy.removeEventListener("mousedown", win);
 					count *= self.data.count;
-					if (w < self.maxW - 20) w *= self.data.xo;
-					if (h < self.maxH - 20) h *= self.data.yo;
-					self.w = w;
-					self.h = h;
 					self.numChars = count;
 					run();
 
 				}, false);
 
-				var bombs = (count / 80) | 0;
+				var bombs = (count / self.data.bombEvery) | 0;
 				if (self.bonusBomb || Math.random() < 0.2) bombs++;
 
 				for (var i = 0; i < bombs; i++) {
-					self.add2(self.uni.bomb, Math.random() * w | 0,
-						Math.random() * h | 0);
+					randPos = self.randPos();
+					self.add2(
+						self.uni.bomb,
+						randPos.x,
+						randPos.y);
 				}
 
 			}());
 
 			this.run();
+
+		},
+
+		reset: function () {
+
+			if (this.highest > this.highestEver) {
+				this.highestEver = this.highest;
+			}
 
 		},
 
@@ -131,6 +155,22 @@
 				main.run();
 
 			});
+
+		},
+
+		randPos: function () {
+
+			var w = this.data.bounds.w,
+				h = this.data.bounds.h,
+				xo = (this.maxW - w) / 2,
+				yo = (this.maxH - h) / 2,
+				rx = Math.random() * w,
+				ry = Math.random() * h;
+
+			return {
+				x: (rx + xo) | 0,
+				y: (ry + yo) | 0
+			}
 
 		},
 
@@ -229,16 +269,18 @@
 				});
 
 			this.updateScore(this.data.scores.shuffle);
-			this.addOneUp(this.sign(this.data.scores.shuffle), x, y, 1);
+			this.addOneUp(this.sign(this.data.scores.shuffle), x, y - 50, 1);
 
 		},
 
 		gets: function (x, y) {
 
-			//x += this.boardPos.x;
-			//y += this.boardPos.y;
+			var bb = this.data.bounds;
 
-			this.addOneUp(this.data.scores.snowman + "!!!", x, y, -0.5, 100);
+			if (bb.w < this.maxW - 20) bb.w *= this.data.xo;
+			if (bb.h < this.maxH - 20) bb.h *= this.data.yo;
+
+			this.addOneUp(this.data.scores.snowman + "!!!", x, y - 80, -0.5, 100);
 			this.updateScore(this.data.scores.snowman);
 			this.round++;
 
@@ -254,7 +296,7 @@
 
 			if (now - this.last > 1000) {
 				this.last = now;
-				this.addOneUp(this.data.scores.timeSubtract, 20, 20, 1);
+				//this.addOneUp(this.data.scores.timeSubtract, 20, 20, 1);
 				this.updateScore(this.data.scores.timeSubtract);
 			}
 
@@ -328,9 +370,10 @@
 		},
 
 		updateHUD: function () {
-			document.querySelector("#score").innerHTML = this.score + " Game hi:" +this.highest + " Best:" + "<br/>";
+			var d = this.data;
+			document.querySelector("#score").innerHTML = this.score;// + " Game hi:" +this.highest + " Best:" + this.highestEver + "<br/>";
 			document.querySelector("#round").innerHTML = this.round;
-			document.querySelector("#stats").innerHTML = (this.numChars | 0) + "  " + this.data.count.toFixed(2) + "--" + (this.numChars|0) + ":" + (this.w | 0) + ":" + (this.h |0);
+			//document.querySelector("#stats").innerHTML = d.count.toFixed(2) + "--" + (this.numChars|0) + ":" + (d.bounds.w | 0) + ":" + (d.bounds.h |0);
 		}
 
 	}
