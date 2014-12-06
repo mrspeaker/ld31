@@ -18,7 +18,7 @@
 				removeOne: 5,
 				shuffle: -1001,
 				snowman: 3100,
-				timeSubtract: 30
+				timeSubtract: -30
 			},
 			xo: 1.06,
 			yo: 1.04,
@@ -73,7 +73,7 @@
 					);
 				}
 
-				var snowy = self.add(
+				var snowy = self.snowman = self.add(
 					snowman,
 					Math.random() * w | 0,
 					Math.random() * h | 0);
@@ -84,7 +84,7 @@
 
 				snowy.addEventListener("mousedown", function win (e) {
 
-					self.gets();
+					self.gets(e.pageX, e.pageY);
 					e.preventDefault();
 					snowy.removeEventListener("mousedown", win);
 					count *= self.data.count;
@@ -96,6 +96,9 @@
 					run();
 
 				}, false);
+
+				self.add2(0xD83D, 0xDE04, Math.random() * w | 0,
+					Math.random() * h | 0);
 
 			}());
 
@@ -138,6 +141,20 @@
 
 		},
 
+		add2: function (cc1, cc2, x, y) {
+
+			var s = this.add(cc1, x, y);
+			s.innerHTML = String.fromCharCode(cc1, cc2);
+			return s;
+
+		},
+
+		getAllChars: function () {
+
+			return Array.prototype.slice.call(document.querySelectorAll(".char"));
+
+		},
+
 		sign: function (amount) {
 
 			return (amount >= 0 ? "+" : "") + amount;
@@ -146,11 +163,36 @@
 
 		killChar: function (el) {
 
-			this.removeEl(el);
 			var pos = this.getElPos(el);
-			var boardPos = this.boardPos
-			this.addOneUp(this.sign(this.data.scores.removeOne), pos.x + boardPos.x, pos.y+ boardPos.y, -1);
+			this.removeEl(el);
+			var inn = el.innerHTML;
+			if (inn.length === 2) {
+				if (inn.charCodeAt(1) === 56836) {
+					this.explode(pos);
+				}
+			}
+
+			this.addOneUp(this.sign(this.data.scores.removeOne), pos.x, pos.y, -1);
 			this.updateScore(this.data.scores.removeOne);
+		},
+
+		explode: function (pos) {
+
+			var self = this;
+
+			this.getAllChars().forEach(function (el) {
+				if (el == this.snowman) {
+					return;
+				}
+				var pos2 = self.getElPos(el),
+					xo = pos.x - pos2.x,
+					yo = pos.y - pos2.y;
+
+				if (Math.sqrt(xo * xo + yo * yo) < 130) {
+					this.killChar(el);
+				}
+			}, this);
+
 		},
 
 		shuffle: function (x, y) {
@@ -165,8 +207,12 @@
 
 		},
 
-		gets: function () {
+		gets: function (x, y) {
 
+			//x += this.boardPos.x;
+			//y += this.boardPos.y;
+
+			this.addOneUp(this.data.scores.snowman + "!!!", x, y, -0.5, 100);
 			this.updateScore(this.data.scores.snowman);
 			this.round++;
 
@@ -182,6 +228,7 @@
 
 			if (now - this.last > 1000) {
 				this.last = now;
+				this.addOneUp(this.data.scores.timeSubtract, 20, 20, 1);
 				this.updateScore(this.data.scores.timeSubtract);
 			}
 
@@ -238,11 +285,13 @@
 
 			var style = el.style,
 				y = style.top,
-				x = style.left;
+				x = style.left,
+				board = this.boardPos;
+
 
 			return {
-				x: parseInt(x, 10),
-				y: parseInt(y, 10)
+				x: parseInt(x, 10) + board.x,
+				y: parseInt(y, 10) + board.y
 			}
 
 		},

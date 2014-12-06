@@ -18,16 +18,18 @@
 			var el = this.el = document.createElement("div");
 			el.className = "oneup";
 			el.innerHTML = msg;
-			this.sync();
+			this.sync(1);
 
 			return this;
 
 		},
 
-		sync: function () {
+		sync: function (perc) {
 
 			this.el.style.top = this.y + "px";
 			this.el.style.left = this.x + "px";
+			this.el.style.opacity = perc;
+
 
 		},
 
@@ -42,7 +44,7 @@
 
 			this.y += this.dir;
 
-			this.sync();
+			this.sync(1 - perc);
 
 			return true;
 
