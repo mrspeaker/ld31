@@ -9,7 +9,11 @@
 
 		round: 0,
 		score: 1000,
+		highest: 0,
+		highestEver: 0,
 		last: Date.now(),
+
+		bonusBomb: true,
 
 		debug: false,
 
@@ -23,6 +27,13 @@
 			xo: 1.06,
 			yo: 1.04,
 			count: 1.15
+		},
+
+		uni: {
+
+			bomb: [55357, 56483],
+			poo: [55357, 56489]
+
 		},
 
 		fx: null,
@@ -97,8 +108,13 @@
 
 				}, false);
 
-				self.add2(0xD83D, 0xDE04, Math.random() * w | 0,
-					Math.random() * h | 0);
+				var bombs = (count / 80) | 0;
+				if (self.bonusBomb || Math.random() < 0.2) bombs++;
+
+				for (var i = 0; i < bombs; i++) {
+					self.add2(self.uni.bomb, Math.random() * w | 0,
+						Math.random() * h | 0);
+				}
 
 			}());
 
@@ -141,10 +157,10 @@
 
 		},
 
-		add2: function (cc1, cc2, x, y) {
+		add2: function (charCodes, x, y) {
 
-			var s = this.add(cc1, x, y);
-			s.innerHTML = String.fromCharCode(cc1, cc2);
+			var s = this.add(charCodes[0], x, y);
+			s.innerHTML = String.fromCharCode(charCodes[0], charCodes[1]);
 			return s;
 
 		},
@@ -161,15 +177,25 @@
 
 		},
 
-		killChar: function (el) {
+		killChar: function (el, byChar) {
 
 			var pos = this.getElPos(el);
 			this.removeEl(el);
 			var inn = el.innerHTML;
 			if (inn.length === 2) {
-				if (inn.charCodeAt(1) === 56836) {
-					this.explode(pos);
+
+				if (inn.charCodeAt(1) === this.uni.bomb[1]) {
+					this.bonusBomb = false;
+					if (byChar) {
+						setTimeout((function () {
+							this.explode(pos);
+						}).bind(this), 300);
+					}
+					else {
+						this.explode(pos);
+					}
 				}
+
 			}
 
 			this.addOneUp(this.sign(this.data.scores.removeOne), pos.x, pos.y, -1);
@@ -189,7 +215,7 @@
 					yo = pos.y - pos2.y;
 
 				if (Math.sqrt(xo * xo + yo * yo) < 130) {
-					this.killChar(el);
+					this.killChar(el, true);
 				}
 			}, this);
 
@@ -246,6 +272,11 @@
 
 		updateScore: function (amount) {
 			this.score += amount;
+
+			if (this.score > this.highest) {
+				this.highest = this.score;
+			}
+
 			this.updateHUD();
 		},
 
@@ -297,9 +328,9 @@
 		},
 
 		updateHUD: function () {
-			document.querySelector("#score").innerHTML = this.score;
+			document.querySelector("#score").innerHTML = this.score + " Game hi:" +this.highest + " Best:" + "<br/>";
 			document.querySelector("#round").innerHTML = this.round;
-			document.querySelector("#stats").innerHTML = this.data.count + "--" + (this.numChars|0) + ":" + (this.w | 0) + ":" + (this.h |0);
+			document.querySelector("#stats").innerHTML = (this.numChars | 0) + "  " + this.data.count.toFixed(2) + "--" + (this.numChars|0) + ":" + (this.w | 0) + ":" + (this.h |0);
 		}
 
 	}
