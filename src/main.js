@@ -13,27 +13,45 @@
 
 		debug: false,
 
-		diff: {
+		data: {
+			scores: {
+				removeOne: 5,
+				shuffle: -1001,
+				snowman: 3100,
+				timeSubtract: 30
+			},
 			xo: 1.06,
 			yo: 1.04,
 			count: 1.15
 		},
 
+		fx: null,
+
+		numChars: 0,
+
 		init: function () {
 
 			this.updateHUD();
+
+			this.fx = [];
 
 			var snowman = 9731,
 				start = 9000,
 				board = document.querySelector("#board");
 			var self = this;
 
+			this.board = board;
+			this.boardPos = {
+				x: board.offsetLeft,
+				y: board.offsetTop
+			}
+			this.fxDom = document.querySelector("#fx");
+
 			board.addEventListener("click", function (e) {
 				if (e.target.className !== "char") {
-					self.shuffle();
+					self.shuffle(e.pageX, e.pageY);
 				} else {
-					// Kill
-					board.removeChild(e.target);
+					self.killChar(e.target);
 				}
 			});
 
@@ -69,12 +87,12 @@
 					self.gets();
 					e.preventDefault();
 					snowy.removeEventListener("mousedown", win);
-					count *= self.diff.count;
-					if (w < self.maxW - 20) w *= self.diff.xo;
-					if (h < self.maxH - 20) h *= self.diff.yo;
+					count *= self.data.count;
+					if (w < self.maxW - 20) w *= self.data.xo;
+					if (h < self.maxH - 20) h *= self.data.yo;
 					self.w = w;
 					self.h = h;
-					self.count = count;
+					self.numChars = count;
 					run();
 
 				}, false);
@@ -97,6 +115,14 @@
 
 		},
 
+		addOneUp: function (msg, x, y, dir, life) {
+
+			var o = Object.create(OneUp).init(msg, x, y, dir, life);
+			this.addFxEl(o.el);
+			this.fx.push(o);
+
+		},
+
 		add: function (charCode, x, y) {
 
 			var s = document.createElement("span");
@@ -106,29 +132,46 @@
 			s.style.top = y + "px";
 			s.style.left = x + "px";
 
-			board.appendChild(s);
+			this.addEl(s);
 
 			return s;
 
 		},
 
-		shuffle: function () {
+		sign: function (amount) {
+
+			return (amount >= 0 ? "+" : "") + amount;
+
+		},
+
+		killChar: function (el) {
+
+			this.removeEl(el);
+			var pos = this.getElPos(el);
+			var boardPos = this.boardPos
+			this.addOneUp(this.sign(this.data.scores.removeOne), pos.x + boardPos.x, pos.y+ boardPos.y, -1);
+			this.updateScore(this.data.scores.removeOne);
+		},
+
+		shuffle: function (x, y) {
 
 			Array.prototype.slice.call(document.querySelectorAll(".char"))
 				.forEach(function (el) {
 					el.style.zIndex = Math.random () * 50 | 0;
 				});
 
+			this.updateScore(this.data.scores.shuffle);
+			this.addOneUp(this.sign(this.data.scores.shuffle), x, y, 1);
+
 		},
 
 		gets: function () {
 
-			this.score += 1300;
+			this.updateScore(this.data.scores.snowman);
 			this.round++;
-			this.updateHUD();
 
-			if (this.round > 30 && this.diff.count > 1.05) {
-				this.diff.count -= 0.008;
+			if (this.round > 30 && this.data.count > 1.05) {
+				this.data.count -= 0.008;
 			}
 
 		},
@@ -139,9 +182,67 @@
 
 			if (now - this.last > 1000) {
 				this.last = now;
-				this.score -= 30;
+				this.updateScore(this.data.scores.timeSubtract);
+			}
 
-				this.updateHUD();
+			this.fx = this.fx.filter(function (fx) {
+
+				var res = fx.tick();
+				if (!res) {
+					this.removeFxEl(fx.el);
+				}
+				return res;
+
+			}, this);
+
+		},
+
+		updateScore: function (amount) {
+			this.score += amount;
+			this.updateHUD();
+		},
+
+		addEl: function (el) {
+
+			this.board.appendChild(el);
+
+		},
+
+		removeEl: function (el) {
+
+			try {
+				this.board.removeChild(el)
+			} catch (e) {
+				console.log("already gone")
+			}
+
+		},
+
+		addFxEl: function (el) {
+
+			this.fxDom.appendChild(el);
+
+		},
+
+		removeFxEl: function (el) {
+
+			try {
+				this.fxDom.removeChild(el)
+			} catch (e) {
+				console.log("already gone")
+			}
+
+		},
+
+		getElPos: function (el) {
+
+			var style = el.style,
+				y = style.top,
+				x = style.left;
+
+			return {
+				x: parseInt(x, 10),
+				y: parseInt(y, 10)
 			}
 
 		},
@@ -149,7 +250,7 @@
 		updateHUD: function () {
 			document.querySelector("#score").innerHTML = this.score;
 			document.querySelector("#round").innerHTML = this.round;
-			document.querySelector("#stats").innerHTML = this.diff.count + "--" + (this.count|0) + ":" + (this.w | 0) + ":" + (this.h |0);
+			document.querySelector("#stats").innerHTML = this.data.count + "--" + (this.numChars|0) + ":" + (this.w | 0) + ":" + (this.h |0);
 		}
 
 	}
