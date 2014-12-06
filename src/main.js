@@ -31,11 +31,11 @@
 			},
 
 			bounds: {
-				w: 100,
-				h: 100
+				w: 100, //1024,
+				h: 100 //576
 			},
 
-			startChars: 2,
+			startChars: 2, //502,
 			xGrowSpeed: 1.06,
 			yGrowSpeed: 1.04,
 			charGrowSpeed: 1.15,
@@ -135,7 +135,9 @@
 
 		clearField: function () {
 
-			this.board.innerHTML = "";
+			while (board.firstChild) {
+    			board.removeChild(board.firstChild);
+			}
 
 		},
 
@@ -158,7 +160,7 @@
 		addSpecials: function () {
 
 			// Add snowman
-			var randPos = this.randPos();
+			var randPos = this.randPos(true);
 			var snowy = this.snowman = this.add(
 				this.uni.snowman,
 				randPos.x,
@@ -183,8 +185,6 @@
 			var bombs = (this.numChars / this.data.bombEvery) | 0;
 			if (this.round > 0 && (this.bonusBomb || Math.random() < 0.2)) bombs++;
 
-			console.log(bombs, this.numChars / this.data.bombEvery);
-
 			for (var i = 0; i < bombs; i++) {
 				randPos = this.randPos();
 				this.add2(
@@ -198,18 +198,27 @@
 
 		},
 
-		randPos: function () {
+		randPos: function (ensureIn) {
 
 			var w = this.data.bounds.w,
 				h = this.data.bounds.h,
 				xo = (this.maxW - w) / 2,
 				yo = (this.maxH - h) / 2,
 				rx = Math.random() * w,
-				ry = Math.random() * h;
+				ry = Math.random() * h,
+				x = ((rx + xo) | 0) - 15,
+				y = ((ry + yo) | 0) - 15;
+
+			if (ensureIn) {
+				if (x < 0) x = 0;
+				if (x > this.maxW - 25) x = this.maxW - 25;
+				if (y < 0) y = 0;
+				if (y > this.maxH - 35) y = this.maxH - 35;
+			}
 
 			return {
-				x: (rx + xo) | 0,
-				y: (ry + yo) | 0
+				x: x,
+				y: y
 			}
 
 		},
@@ -423,7 +432,7 @@
 			var d = this.data;
 			document.querySelector("#score").innerHTML = "$" + this.score;// + " Game hi:" +this.highest + " Best:" + this.highestEver + "<br/>";
 			document.querySelector("#round").innerHTML = this.round + "☃";
-			//document.querySelector("#stats").innerHTML = d.count.toFixed(2) + "--" + (this.numChars|0) + ":" + (d.bounds.w | 0) + ":" + (d.bounds.h |0);
+			//document.querySelector("#stats").innerHTML = (this.numChars | 0) + ":" + (d.bounds.w | 0) + ":" + (d.bounds.h |0);
 		}
 
 	}
