@@ -8,30 +8,40 @@
 		maxH: 576,
 
 		round: 0,
-		score: 1000,
+
+		score: 0,
 		highest: 0,
 		highestEver: 0,
+
 		last: Date.now(),
 
 		bonusBomb: true,
 
 		debug: false,
 
+		ini: null,
 		data: {
+
 			scores: {
-				removeOne: 5,
-				shuffle: -1001,
-				snowman: 3100,
-				timeSubtract: -30
+				start: 100,
+				removeOne: 1,
+				shuffle: -20,
+				snowman: 100,
+				timeSubtract: -2
 			},
+
 			bounds: {
 				w: 100,
 				h: 100
 			},
-			xo: 1.06,
-			yo: 1.04,
-			count: 1.15,
+
+			startChars: 2,
+			xGrowSpeed: 1.06,
+			yGrowSpeed: 1.04,
+			charGrowSpeed: 1.15,
+
 			bombEvery: 80
+
 		},
 
 		uni: {
@@ -49,16 +59,13 @@
 
 		init: function () {
 
-			var self = this;
-
-			this.updateHUD();
+			this.ini = utils.clone(this.data);
 
 			this.fx = [];
 
 			var snowman = this.uni.snowman,
 				start = this.uni.startCodes,
 				board = document.querySelector("#board");
-			var self = this;
 
 			this.board = board;
 			this.boardPos = {
@@ -67,73 +74,23 @@
 			}
 			this.fxDom = document.querySelector("#fx");
 
-			document.querySelector("#giveUp").addEventListener("click", function () {
+			board.addEventListener("click", (function (e) {
 
-				self.reset();
+				var isChar = e.target.className !== "char";
 
-			}, false);
-
-			board.addEventListener("click", function (e) {
-				if (e.target.className !== "char") {
-					self.shuffle(e.pageX, e.pageY);
+				if (isChar) {
+					this.shuffle(e.pageX, e.pageY);
 				} else {
-					self.killChar(e.target);
-				}
-			});
-
-			var round = 1,
-				count = 2,
-				bb = this.data.bounds;
-
-			(function run () {
-
-				var randPos;
-
-				board.innerHTML = "";
-				for (var i = 0; i < count; i++) {
-					if (start + i === snowman) continue;
-					var randPos = self.randPos();
-					self.add(
-						start + i,
-						randPos.x,
-						randPos.y
-					);
+					this.killChar(e.target);
 				}
 
-				randPos = self.randPos();
-				var snowy = self.snowman = self.add(
-					snowman,
-					randPos.x,
-					randPos.y);
+			}).bind(this));
 
-				if (self.debug) {
-					snowy.style.backgroundColor = "red";
-				}
+			document
+				.querySelector("#giveUp")
+				.addEventListener("click", this.reset.bind(this), false);
 
-				snowy.addEventListener("mousedown", function win (e) {
-
-					self.gets(e.pageX, e.pageY);
-					e.preventDefault();
-					snowy.removeEventListener("mousedown", win);
-					count *= self.data.count;
-					self.numChars = count;
-					run();
-
-				}, false);
-
-				var bombs = (count / self.data.bombEvery) | 0;
-				if (self.bonusBomb || Math.random() < 0.2) bombs++;
-
-				for (var i = 0; i < bombs; i++) {
-					randPos = self.randPos();
-					self.add2(
-						self.uni.bomb,
-						randPos.x,
-						randPos.y);
-				}
-
-			}());
-
+			this.reset();
 			this.run();
 
 		},
@@ -143,6 +100,15 @@
 			if (this.highest > this.highestEver) {
 				this.highestEver = this.highest;
 			}
+
+			this.data = utils.clone(this.ini);
+			this.score = this.data.scores.start;
+			this.round = 0;
+			this.numChars = this.data.startChars;
+
+			this.updateHUD();
+
+			this.nextLevel();
 
 		},
 
@@ -155,6 +121,74 @@
 				main.run();
 
 			});
+
+		},
+
+		nextLevel: function () {
+
+			this.clearField();
+			this.populateField();
+			this.addSpecials();
+
+		},
+
+		clearField: function () {
+
+			this.board.innerHTML = "";
+
+		},
+
+		populateField: function () {
+
+			var start = this.uni.startCodes;
+
+			for (var i = 0; i < this.numChars; i++) {
+				if (start + i === this.uni.snowman) continue;
+				var randPos = this.randPos();
+				this.add(
+					start + i,
+					randPos.x,
+					randPos.y
+				);
+			}
+
+		},
+
+		addSpecials: function () {
+
+			// Add snowman
+			var randPos = this.randPos();
+			var snowy = this.snowman = this.add(
+				this.uni.snowman,
+				randPos.x,
+				randPos.y);
+
+			if (this.debug) {
+				snowy.style.backgroundColor = "red";
+			}
+
+			snowy.addEventListener("mousedown", (function win (e) {
+
+				this.gets(e.pageX, e.pageY);
+				e.preventDefault();
+				snowy.removeEventListener("mousedown", win);
+				this.numChars *= this.data.charGrowSpeed;
+
+				this.nextLevel();
+
+			}).bind(this), false);
+
+			// Add bombs
+			var bombs = (this.data.numChars / this.data.bombEvery) | 0;
+			if (this.round > 0 && (this.bonusBomb || Math.random() < 0.2)) bombs++;
+
+			for (var i = 0; i < bombs; i++) {
+				randPos = this.randPos();
+				this.add2(
+					this.uni.bomb,
+					randPos.x,
+					randPos.y);
+			}
 
 		},
 
@@ -277,8 +311,8 @@
 
 			var bb = this.data.bounds;
 
-			if (bb.w < this.maxW - 20) bb.w *= this.data.xo;
-			if (bb.h < this.maxH - 20) bb.h *= this.data.yo;
+			if (bb.w < this.maxW - 20) bb.w *= this.data.xGrowSpeed;
+			if (bb.h < this.maxH - 20) bb.h *= this.data.yGrowSpeed;
 
 			this.addOneUp(this.data.scores.snowman + "!!!", x, y - 80, -0.5, 100);
 			this.updateScore(this.data.scores.snowman);
@@ -314,6 +348,9 @@
 
 		updateScore: function (amount) {
 			this.score += amount;
+			if (this.score < 0) {
+				this.score = 0;
+			}
 
 			if (this.score > this.highest) {
 				this.highest = this.score;

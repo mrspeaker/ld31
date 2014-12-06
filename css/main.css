@@ -3,8 +3,9 @@ html, body {
 }
 body {
 	margin: 0;
-	background-color: #040;
+	background-color: #302921;
 	font-size: 15pt;
+	font-family: helvetica, arial, san-serif;
 }
 .char {
 	position: absolute;
@@ -17,6 +18,12 @@ body {
 	padding: 2px;
 	cursor: pointer;
 	transform: translate3d(0, 0, 0);
+	border-radius: 3px;
+}
+
+.flipped {
+	color: #c50;
+	background-color: #c50;
 }
 
 #game {
@@ -30,6 +37,7 @@ body {
 	overflow: hidden;
 	border: 1px solid green;
 	margin: auto;
+	background: url(../res/felt.png);
 }
 
 #fx {
@@ -58,4 +66,6 @@ body {
 	background-color: red;
 	color: yellow;
 	z-index: 9999;
+	padding: 4px;
+	border-radius: 5px;
 }
