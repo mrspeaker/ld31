@@ -77,6 +77,8 @@
 				x: board.offsetLeft,
 				y: board.offsetTop
 			}
+			this.setTransformProperty();
+
 			this.fxDom = document.querySelector("#fx");
 
 			board.addEventListener("click", (function (e) {
@@ -186,14 +188,17 @@
 
 			for (var i = 0; i < bombs; i++) {
 				randPos = this.randPos();
-				this.add2(
+				var b = this.add2(
 					this.uni.bomb,
 					randPos.x,
 					randPos.y);
+				b.style.color = "hsl(100, 50%, 50%)";
+
 			}
 
-			//var a = this.add(0x21E7, 10, 10);
-			//a.classList.add("special");
+			randPos = this.randPos();
+			var a = this.add(this.uni.arrow, randPos.x, randPos.y);
+			a.classList.add("special");
 
 		},
 
@@ -273,14 +278,56 @@
 
 		},
 
+		setTransformProperty: function () {
+
+		    var	board = this.board,
+		    	properties = [
+			        'transform',
+			        'WebkitTransform',
+			        'msTransform',
+			        'MozTransform',
+			        'OTransform'
+			    ],
+		    	p;
+		    while (!p && (p = properties.shift())) {
+		        if (typeof board.style[p] != 'undefined') {
+		            //return p;
+		        } else {
+		        	p = null
+		        }
+		    }
+		    this.rotateProp = p;
+
+		},
+
 		killChar: function (el, byChar) {
 
 			var pos = this.getElPos(el);
-			this.removeEl(el);
 			var inn = el.innerHTML;
-			if (inn.length === 2) {
+
+			var remover = (function () {
+				this.removeEl(el);
+				this.addOneUp(this.sign(this.data.scores.removeOne), pos.x, pos.y, -1);
+				this.updateScore(this.data.scores.removeOne);
+			}).bind(this);
+
+			if (inn.charCodeAt(0) === this.uni.arrow) {
+
+				//alert(this.snowman);
+				if (this.rotateProp) {
+					var dx = el.offsetLeft - this.snowman.offsetLeft,
+					    dy = el.offsetTop - this.snowman.offsetTop,
+					    angle = Math.atan2(dy, dx) - (Math.PI / 2);
+
+					//return angle;// % Math.PI;
+					el.style[this.rotateProp] = 'rotate(' + angle + 'rad)';
+				}
+
+			}
+			else if (inn.length === 2) {
 
 				if (inn.charCodeAt(1) === this.uni.bomb[1]) {
+					remover();
 					this.bonusBomb = false;
 					if (byChar) {
 						setTimeout((function () {
@@ -293,9 +340,10 @@
 				}
 
 			}
+			else {
+				remover();
+			}
 
-			this.addOneUp(this.sign(this.data.scores.removeOne), pos.x, pos.y, -1);
-			this.updateScore(this.data.scores.removeOne);
 		},
 
 		explode: function (pos) {
@@ -459,7 +507,7 @@
 		updateHUD: function () {
 			var d = this.data;
 			document.querySelector("#score").innerHTML = "$" + this.score;// + " Game hi:" +this.highest
-			document.querySelector("#round").innerHTML = this.round + "☃ $" + this.roundHighest;
+			document.querySelector("#round").innerHTML = this.round + "☃"; //" $" + this.roundHighest;
 			//document.querySelector("#stats").innerHTML = (this.numChars | 0) + ":" + (d.bounds.w | 0) + ":" + (d.bounds.h |0);
 		}
 

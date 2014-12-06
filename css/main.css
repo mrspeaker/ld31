@@ -32,6 +32,7 @@ body {
 
 #game {
 	position: relative;
+	transform: translate3d(0, 0, 0);
 }
 
 #board {
@@ -70,7 +71,7 @@ body {
 	background-color: red;
 	color: yellow;
 	z-index: 9999;
-	padding: 3px;
+	padding: 2px;
 	border-radius: 5px;
 	cursor: pointer;
 }
