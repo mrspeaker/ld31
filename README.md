@@ -10,11 +10,16 @@
 ## TODO:
 
 * Juice on snowman get
-* Something for "Cash out"?
-* SHow hi-score
+* unicode img for chrome (ie?)
 * Deal anim
+
 * Arrow points to snowman
+
 * Sfx
 * Theme tune
+
 * Table gfx
+
+* SHow hi-score
+* Something for "Cash out"?
 * Network save

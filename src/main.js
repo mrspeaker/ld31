@@ -10,8 +10,7 @@
 		round: 0,
 
 		score: 0,
-		highest: 0,
-		highestEver: 0,
+		roundHighest: 0,
 
 		last: Date.now(),
 
@@ -22,6 +21,8 @@
 		ini: null,
 
 		shakeTime: 0,
+
+		state: "BORN",
 
 		data: {
 
@@ -101,12 +102,9 @@
 
 		reset: function () {
 
-			if (this.highest > this.highestEver) {
-				this.highestEver = this.highest;
-			}
-
 			this.data = utils.clone(this.ini);
 			this.score = this.data.scores.start;
+			this.roundHighest = 0;
 			this.round = 0;
 			this.numChars = this.data.startChars;
 
@@ -175,12 +173,10 @@
 
 			snowy.addEventListener("mousedown", (function win (e) {
 
-				this.gets(e.pageX, e.pageY);
 				e.preventDefault();
 				snowy.removeEventListener("mousedown", win);
-				this.numChars *= this.data.charGrowSpeed;
 
-				this.nextLevel();
+				this.gets(e.pageX, e.pageY);
 
 			}).bind(this), false);
 
@@ -339,6 +335,8 @@
 			this.addOneUp("$" + this.data.scores.snowman + "!!!", x, y - 80, -0.5, 100);
 			this.updateScore(this.data.scores.snowman);
 
+			this.roundHighest = this.score;
+
 			if (this.data.scores.snowman < 100) {
 				this.data.scores.snowman = this.data.scores.snowman * 1.1 | 0;
 			}
@@ -348,6 +346,11 @@
 			if (this.round > 30 && this.data.count > 1.05) {
 				this.data.count -= 0.008;
 			}
+
+			this.numChars *= this.data.charGrowSpeed;
+			this.nextLevel();
+
+			this.updateHUD();
 
 		},
 
@@ -388,8 +391,8 @@
 				this.score = 0;
 			}
 
-			if (this.score > this.highest) {
-				this.highest = this.score;
+			if (this.score > this.roundHighest) {
+				this.roundHighest = this.score;
 			}
 
 			this.updateHUD();
@@ -444,8 +447,8 @@
 
 		updateHUD: function () {
 			var d = this.data;
-			document.querySelector("#score").innerHTML = "$" + this.score;// + " Game hi:" +this.highest + " Best:" + this.highestEver + "<br/>";
-			document.querySelector("#round").innerHTML = this.round + "☃";
+			document.querySelector("#score").innerHTML = "$" + this.score;// + " Game hi:" +this.highest
+			document.querySelector("#round").innerHTML = this.round + "☃ $" + this.roundHighest;
 			//document.querySelector("#stats").innerHTML = (this.numChars | 0) + ":" + (d.bounds.w | 0) + ":" + (d.bounds.h |0);
 		}
 
