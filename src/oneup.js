@@ -18,6 +18,11 @@
 			var el = this.el = document.createElement("div");
 			el.className = "oneup";
 			el.innerHTML = msg;
+
+			var col = 360 * Math.random() | 0; //(0.6 + (Math.random() * 0.4)) | 0;
+			//el.style.color = "rgb(" + col + "," + col + "," + col + ")";
+			el.style.backgroundColor = "hsl(" + col + ", 80%, 50%)";
+
 			this.sync(1);
 
 			return this;

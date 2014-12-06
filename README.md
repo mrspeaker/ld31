@@ -9,13 +9,14 @@
 
 ## TODO:
 
-* Juice on snowman get
 * unicode img for chrome (ie?)
 * Deal anim
-
 * Arrow points to snowman
 
-* Sfx
+* sfx: get snowman
+* sfx: shuffle
+* sfx: bomb
+
 * Theme tune
 
 * Table gfx

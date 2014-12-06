@@ -1,5 +1,6 @@
 html, body {
 	height: 100%;
+	overflow: hidden;
 }
 body {
 	margin: 0;
@@ -69,11 +70,13 @@ body {
 	background-color: red;
 	color: yellow;
 	z-index: 9999;
-	padding: 4px;
+	padding: 3px;
 	border-radius: 5px;
+	cursor: pointer;
 }
 .particle {
 	position: absolute;
 	font-size: 24pt;
 	z-index: 9998;
+	cursor: pointer;
 }

@@ -340,7 +340,7 @@
 			if (bb.w < this.maxW - 20) bb.w *= this.data.xGrowSpeed;
 			if (bb.h < this.maxH - 20) bb.h *= this.data.yGrowSpeed;
 
-			this.addOneUp("$" + this.data.scores.snowman + "!!!", x, y - 80, -0.5, 100);
+			this.addOneUp("$" + this.data.scores.snowman, x, y - 80, -0.5, 100);
 			this.updateScore(this.data.scores.snowman);
 
 			this.roundHighest = this.score;

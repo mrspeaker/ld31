@@ -19,7 +19,8 @@
 			var el = this.el = document.createElement("div");
 			el.className = "particle";
 			el.innerHTML = String.fromCharCode(9731);
-			var col = 360 * Math.random() | 0;//(0.6 + (Math.random() * 0.4)) | 0;
+
+			var col = 360 * Math.random() | 0; //(0.6 + (Math.random() * 0.4)) | 0;
 			//el.style.color = "rgb(" + col + "," + col + "," + col + ")";
 			el.style.color = "hsl(" + col + ", 80%, 50%)";
 			this.sync(1);
