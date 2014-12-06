@@ -20,6 +20,9 @@
 		debug: false,
 
 		ini: null,
+
+		shakeTime: 0,
+
 		data: {
 
 			scores: {
@@ -295,6 +298,8 @@
 
 			var self = this;
 
+			this.shakeTime = 30;
+
 			this.getAllChars().forEach(function (el) {
 				if (el == this.snowman) {
 					return;
@@ -349,6 +354,15 @@
 		tick: function () {
 
 			var now = Date.now();
+
+			if (this.shakeTime > 0) {
+				this.board.style.left = (Math.random() * 10 - 5 | 0) + "px";
+				this.board.style.top = (Math.random() * 10 - 5 | 0) + "px";
+				if (--this.shakeTime <= 0) {
+					this.board.style.left = 0;
+					this.board.style.top = 0;
+				}
+			}
 
 			if (now - this.last > 1000) {
 				this.last = now;
