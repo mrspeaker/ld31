@@ -90,7 +90,11 @@
 
 			document
 				.querySelector("#giveUp")
-				.addEventListener("click", this.reset.bind(this), false);
+				.addEventListener("click", (function () {
+					if (confirm("Restart fo' sure?")) {
+						this.reset();
+					}
+				}).bind(this), false);
 
 			this.reset();
 			this.run();
@@ -518,8 +522,8 @@
 
 		updateHUD: function () {
 			var d = this.data;
-			document.querySelector("#score").innerHTML = "$" + this.score;// + " Game hi:" +this.highest
-			document.querySelector("#round").innerHTML = this.round + "☃"; //" $" + this.roundHighest;
+			document.querySelector("#score").innerHTML = "$" + this.score;
+			document.querySelector("#round").innerHTML =  "☃" + this.round;
 			//document.querySelector("#stats").innerHTML = (this.numChars | 0) + ":" + (d.bounds.w | 0) + ":" + (d.bounds.h |0);
 		}
 

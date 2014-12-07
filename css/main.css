@@ -1,6 +1,5 @@
 html, body {
 	height: 100%;
-	overflow: hidden;
 }
 body {
 	margin: 0;
@@ -64,6 +63,8 @@ body {
 #header {
 	height: 50px;
 	color: #eee;
+	font-size:28pt;
+	line-height:42pt;
 }
 
 .oneup {
@@ -80,4 +81,9 @@ body {
 	font-size: 24pt;
 	z-index: 9998;
 	cursor: pointer;
+}
+#giveUp {
+	text-decoration: underline;
+	cursor: pointer;
+	font-size: 10pt;
 }
