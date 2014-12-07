@@ -19,6 +19,9 @@
 		shakeTime: 0,
 
 		ini: null,
+
+		headerHeight: 80,
+
 		data: {
 
 			scores: {
@@ -401,7 +404,7 @@
 
 			var shuffleCost = Math.max(this.data.scores.shuffle, -(this.data.scores.snowman / 5) | 0);
 			this.updateScore(shuffleCost);
-			this.addOneUp(this.sign(shuffleCost), x, y - 50, 1);
+			this.addOneUp(this.sign(shuffleCost), x, y - this.headerHeight, 1);
 
 		},
 
@@ -428,7 +431,7 @@
 			}
 
 			for (var i = 0; i < 20; i++) {
-				this.addParticle(x, y - 50)
+				this.addParticle(x, y - (this.headerHeight + 20))
 			}
 
 			this.numChars *= this.data.charGrowSpeed;

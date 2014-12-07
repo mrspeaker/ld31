@@ -5,7 +5,19 @@ body {
 	margin: 0;
 	background-color: #302921;
 	font-size: 15pt;
-	font-family: helvetica, arial, san-serif;
+	font-family: 'Bangers', cursive;
+	background-image: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		color-stop(0, #302921),
+		color-stop(1, #14100C)
+	);
+	background-image: -o-linear-gradient(bottom, #302921 0%, #14100C 100%);
+	background-image: -moz-linear-gradient(bottom, #302921 0%, #14100C 100%);
+	background-image: -webkit-linear-gradient(bottom, #302921 0%, #14100C 100%);
+	background-image: -ms-linear-gradient(bottom, #302921 0%, #14100C 100%);
+	background-image: linear-gradient(to bottom, #302921 0%, #14100C 100%);
 }
 .char {
 	position: absolute;
@@ -42,6 +54,8 @@ body {
 	border: 1px solid green;
 	margin: auto;
 	background: url(../res/felt.png);
+	box-shadow: black 0.1em 0.1em 0.2em;
+	border-radius: 8px;
 }
 
 #fx {
@@ -61,10 +75,11 @@ body {
 }
 
 #header {
-	height: 50px;
-	color: #eee;
-	font-size:28pt;
-	line-height:42pt;
+	height: 80px;
+	color: #e3c360;
+	font-size:38pt;
+	line-height:60pt;
+	text-shadow: black 0.1em 0.1em 0.2em
 }
 
 .oneup {
