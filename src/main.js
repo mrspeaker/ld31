@@ -64,6 +64,16 @@
 
 			this.ini = utils.clone(this.data);
 
+			this.sounds = {
+				blip: Object.create(Sound).init("res/sounds/blip", 0.8),
+				geta: Object.create(Sound).init("res/sounds/get", 0.9),
+				miss: Object.create(Sound).init("res/sounds/miss", 0.7),
+				splode: Object.create(Sound).init("res/sounds/splode", 0.7),
+				theme: Object.create(Sound).init("res/sounds/theme", 0.7, true)
+			};
+
+			this.sounds.theme.play();
+
 			this.fx = [];
 
 			var snowman = this.uni.snowman,
@@ -86,6 +96,7 @@
 				var isChar = e.target.classList.contains("char");
 
 				if (!isChar) {
+					this.sounds.miss.play();
 					this.shuffle(e.pageX, e.pageY);
 				} else {
 					this.killChar(e.target);
@@ -193,7 +204,8 @@
 
 			// Add bombs
 			var bombs = (this.numChars / this.data.bombEvery) | 0;
-			if (this.round > 0 && (this.bonusBomb || Math.random() < 0.2)) bombs++;
+			if (bombs > 3) bombs = 3;
+			if (this.round > 0 && (this.bonusBomb || Math.random() < 0.15)) bombs++;
 
 			for (var i = 0; i < bombs; i++) {
 				randPos = this.randPos();
@@ -358,12 +370,16 @@
 						}).bind(this), 300);
 					}
 					else {
+						this.sounds.splode.play();
 						this.explode(pos);
 					}
 				}
 
 			}
 			else {
+				if (!byChar) {
+					this.sounds.blip.play();
+				}
 				remover();
 			}
 
@@ -409,6 +425,8 @@
 		},
 
 		gets: function (x, y) {
+
+			this.sounds.geta.play();
 
 			var bb = this.data.bounds;
 

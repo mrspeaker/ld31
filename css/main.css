@@ -51,7 +51,7 @@ body {
 	width: 1024px;
 	height: 576px;
 	overflow: hidden;
-	border: 1px solid green;
+	border: 2px solid #050;
 	margin: auto;
 	background: url(../res/felt.png);
 	box-shadow: black 0.1em 0.1em 0.2em;
