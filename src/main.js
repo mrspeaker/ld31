@@ -39,7 +39,7 @@
 			yGrowSpeed: 1.04,
 			charGrowSpeed: 1.15,
 
-			bombEvery: 80
+			bombEvery: 100
 
 		},
 
@@ -321,13 +321,14 @@
 
 			if (inn.charCodeAt(0) === this.uni.arrow) {
 
-				if (this.rotateProp) {
+				/*if (this.rotateProp) {
 					var dx = el.offsetLeft - this.snowman.offsetLeft,
 					    dy = el.offsetTop - this.snowman.offsetTop,
 					    angle = Math.atan2(dy, dx) - (Math.PI / 2);
 
 					el.style[this.rotateProp] = "rotate(" + angle + "rad)";
-				}
+				}*/
+				//var thingos =
 
 			}
 			else if (inn.length === 2) {
@@ -358,7 +359,7 @@
 
 			var self = this;
 
-			this.shakeTime = 30;
+			this.shakeTime = 25;
 
 			this.getAllChars().forEach(function (el) {
 
@@ -370,7 +371,7 @@
 					xo = pos.x - pos2.x,
 					yo = pos.y - pos2.y;
 
-				if (Math.sqrt(xo * xo + yo * yo) < 130) {
+				if (Math.sqrt(xo * xo + yo * yo) < 80) {
 					this.killChar(el, true);
 				}
 
@@ -387,7 +388,6 @@
 
 				});
 
-			// this.updateScore(this.data.scores.shuffle);
 			var shuffleCost = Math.max(this.data.scores.shuffle, -(this.data.scores.snowman / 5) | 0);
 			this.updateScore(shuffleCost);
 			this.addOneUp(this.sign(shuffleCost), x, y - 50, 1);

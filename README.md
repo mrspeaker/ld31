@@ -11,7 +11,6 @@
 
 * unicode img for chrome (ie?)
 * Deal anim
-* Arrow points to snowman
 
 * sfx: get snowman
 * sfx: shuffle
