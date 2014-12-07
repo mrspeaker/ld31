@@ -191,7 +191,7 @@
 
 			}
 
-			// Add pointing arrows
+			/*// Add pointing arrows
 			var arrows = (this.numChars / (this.data.bombEvery * 4)) | 0;
 			if (this.round > 4 && this.round < 25 && Math.random() < 0.1) arrows++;
 
@@ -202,7 +202,7 @@
 					randPos.x,
 					randPos.y);
 				a.classList.add("special");
-			}
+			}*/
 
 		},
 
