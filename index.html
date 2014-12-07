@@ -6,22 +6,36 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
 </head>
 <body>
+
 	<div id="header" style="text-align:center">
 		<span id="score" style="font-size:28pt;line-height:38pt"></span>
 		<span id="round"></span>
 		<button id="giveUp">Cash out</button>
 		<span id="stats"></span>
 	</div>
+
 	<div id="game" class="noselect">
 		<div id="fx"><div>
 		<div id="board"></div>
 	</div>
+
 	<script src="src/utils.js"></script>
 	<script src="src/oneup.js"></script>
 	<script src="src/particle.js"></script>
 	<script src="src/main.js"></script>
+
+	<script src="/socket.io/socket.io.js"></script>
+
 	<script>
+
 		main.init();
+
+		var socket = window.io();
+
+		socket.on("onconnected", function (data) {
+			console.log("what!", data);
+		});
+
 	</script>
 </body>
 </html>
