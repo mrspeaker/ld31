@@ -24,17 +24,9 @@
 	<script src="src/particle.js"></script>
 	<script src="src/main.js"></script>
 
-	<script src="/socket.io/socket.io.js"></script>
-
 	<script>
 
 		main.init();
-
-		var socket = window.io();
-
-		socket.on("onconnected", function (data) {
-			console.log("what!", data);
-		});
 
 	</script>
 </body>
