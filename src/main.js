@@ -56,6 +56,9 @@
 
 		},
 
+		okToUseUnicodes: null,
+		unicodeIndx: 0,
+
 		fx: null,
 
 		numChars: 0,
@@ -63,6 +66,15 @@
 		init: function () {
 
 			this.ini = utils.clone(this.data);
+
+			this.okToUseUnicodes = [];
+			[
+				[9728, 9839]
+			].forEach(function (r) {
+				for (var i = r[0]; i < r[1]; i++) {
+					this.okToUseUnicodes.push(i);
+				}
+			}, this);
 
 			this.sounds = {
 				blip: Object.create(Sound).init("res/sounds/blip", 0.8),
@@ -166,17 +178,22 @@
 
 		populateField: function () {
 
-			var start = this.uni.startCodes;
+			var start = this.unicodeIndx,
+				codes = this.okToUseUnicodes,
+				codesLen = codes.length;
 
 			for (var i = 0; i < this.numChars; i++) {
-				if (start + i === this.uni.snowman) continue;
+				var code = codes[(start + i) % codesLen];
+				if (code === this.uni.snowman) continue;
 				var randPos = this.randPos();
 				this.add(
-					start + i,
+					code,
 					randPos.x,
 					randPos.y
 				);
 			}
+
+			this.unicodeIndx = (start + i) % codesLen;
 
 		},
 
