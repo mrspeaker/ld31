@@ -31,6 +31,8 @@ body {
 	cursor: pointer;
 	transform: translate3d(0, 0, 0);
 	border-radius: 3px;
+	min-width: 0.85em;
+	text-align: center;
 }
 .special {
 	color: #c50;
@@ -81,13 +83,18 @@ body {
 	line-height:60pt;
 	text-shadow: black 0.1em 0.1em 0.2em
 }
+.bomb {
+	background:url(../res/bombemoji.png) no-repeat;
+	background-position: 2px 4px;
+	background-color: #fff;
+}
 
 .oneup {
 	position: absolute;
 	background-color: red;
 	color: yellow;
 	z-index: 9999;
-	padding: 2px;
+	padding: 3px;
 	border-radius: 5px;
 	cursor: pointer;
 }

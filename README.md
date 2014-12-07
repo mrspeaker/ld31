@@ -1,4 +1,17 @@
-# LD31 snowman finder.
+# Cold Snap (Vegas rules)
+
+Entry for Ludum Dare 31 "Entire Game on one screen (snowman)"
+
+	@mrspeaker
+	http://www.mrspeaker/dev/ld31
+	by Mr Speaker
+
+## TODO:
+
+* unicode img for chrome (ie?)
+* Deal anim
+
+## Notes
 
 ♙☺♧⛄☼☹ - looks like snowman
 ⏳⏰☠❔ - bonuses
@@ -6,20 +19,3 @@
 ☁
 
 ??? color sorter: click the colour one, and all colours of that are gone, unless it's the colour of snowman, then all else dissapperer
-
-## TODO:
-
-* unicode img for chrome (ie?)
-* Deal anim
-
-* sfx: get snowman
-* sfx: shuffle
-* sfx: bomb
-
-* Theme tune
-
-* Table gfx
-
-* SHow hi-score
-* Something for "Cash out"?
-* Network save

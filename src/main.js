@@ -213,6 +213,8 @@
 					this.uni.bomb,
 					randPos.x,
 					randPos.y);
+				b.innerHTML = "&nbsp";
+				b.classList.add("bomb");
 				b.style.color = "hsl(100, 50%, 50%)";
 
 			}
@@ -357,9 +359,10 @@
 				//var thingos =
 
 			}
-			else if (inn.length === 2) {
+			else if (el.classList.contains("bomb")) {
 
-				if (inn.charCodeAt(1) === this.uni.bomb[1]) {
+				//if (inn.charCodeAt(1) === this.uni.bomb[1]) {
+				//if (el.classList.contain("bomb")) {
 					remover();
 					this.bonusBomb = false;
 					if (byChar) {
@@ -373,7 +376,7 @@
 						this.sounds.splode.play();
 						this.explode(pos);
 					}
-				}
+				//}
 
 			}
 			else {
