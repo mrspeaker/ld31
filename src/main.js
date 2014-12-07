@@ -78,20 +78,27 @@
 
 			board.addEventListener("click", (function (e) {
 
+				_d = (++_d||(+[]));
+
 				var isChar = e.target.classList.contains("char");
 
 				if (!isChar) {
 					this.shuffle(e.pageX, e.pageY);
 				} else {
 					this.killChar(e.target);
-				}
+				};
 
 			}).bind(this));
 
 			document
 				.querySelector("#giveUp")
 				.addEventListener("click", (function () {
-					if (confirm("Restart fo' sure?")) {
+					var msg = "You've found " + this.round + " ☃'s";
+					msg += "\nAnd earned " + this.score + " dollars.";
+					msg += "\n\nScreenshot this dialog and post to @mrspeaker,";
+					msg += "\nand he'll add you to the mighty hi-score list."
+					msg += "\n\nSure you want to restart? [" + _d.toString(16).toUpperCase() + "]";
+					if (confirm(msg)) {
 						this.reset();
 					}
 				}).bind(this), false);
@@ -532,3 +539,6 @@
 	window.main = main;
 
 }());
+
+_d=0;"lol";
+
