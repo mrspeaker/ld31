@@ -67,18 +67,31 @@
 
 			this.ini = utils.clone(this.data);
 
-			this.okToUseUnicodes = [];
+			var okcode = [];
 			[
+				[9472, 9599], //Box Drawing
+				[9600, 9621], //Block Elements
+				[9632, 9711],
+				[9985, 10174], // Dingbats
+				[9312, 9470], // Enclosed Alphanumerics
+				[8704, 8941], // Mathematical Operators
+				[8592, 8682], // Arrows
+				[384, 591],
+				[162, 255], // bolded 1/4 etc..
 				[9728, 9839]
 			].forEach(function (r) {
 				for (var i = r[0]; i < r[1]; i++) {
-					this.okToUseUnicodes.push(i);
+					okcode.push(i);
 				}
 			}, this);
 
+			this.okToUseUnicodes = okcode.sort(function () { return Math.random() < 0.5; } );
+			console.log(this.okToUseUnicodes.length);
+
 			this.sounds = {
 				blip: Object.create(Sound).init("res/sounds/blip", 0.8),
-				geta: Object.create(Sound).init("res/sounds/get", 0.9),
+				get1: Object.create(Sound).init("res/sounds/get", 0.85),
+				get2: Object.create(Sound).init("res/sounds/get2", 1),
 				miss: Object.create(Sound).init("res/sounds/miss", 0.7),
 				splode: Object.create(Sound).init("res/sounds/splode", 0.7),
 				theme: Object.create(Sound).init("res/sounds/theme", 0.7, true)
@@ -446,7 +459,7 @@
 
 		gets: function (x, y) {
 
-			this.sounds.geta.play();
+			this.sounds[Math.random() < 0.6 ? "get1" : "get2"].play();
 
 			var bb = this.data.bounds;
 

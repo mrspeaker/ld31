@@ -32,6 +32,7 @@ body {
 	transform: translate3d(0, 0, 0);
 	border-radius: 3px;
 	min-width: 0.85em;
+	min-height: 22px;
 	text-align: center;
 }
 .special {
@@ -87,6 +88,7 @@ body {
 	background:url(../res/bombemoji.png) no-repeat;
 	background-position: 2px 4px;
 	background-color: #fff;
+	width: 18px;
 }
 
 .oneup {
