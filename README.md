@@ -8,7 +8,6 @@ Entry for Ludum Dare 31 "Entire Game on one screen (snowman)"
 
 ## TODO:
 
-* usefule unicode ranges
 * Deal anim
 
 ## Notes

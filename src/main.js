@@ -42,7 +42,7 @@
 			yGrowSpeed: 1.04,
 			charGrowSpeed: 1.15,
 
-			bombEvery: 100
+			bombEvery: 90
 
 		},
 
@@ -234,7 +234,7 @@
 
 			// Add bombs
 			var bombs = (this.numChars / this.data.bombEvery) | 0;
-			if (bombs > 3) bombs = 3;
+			if (bombs > 4) bombs = 4;
 			if (this.round > 0 && (this.bonusBomb || Math.random() < 0.15)) bombs++;
 
 			for (var i = 0; i < bombs; i++) {
